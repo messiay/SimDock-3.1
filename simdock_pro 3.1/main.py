@@ -1,28 +1,29 @@
-import os
+#!/usr/bin/env python3
 import sys
-import tkinter as tk
+import os
 
+# Add both the root directory and the simdock package to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+sys.path.insert(0, os.path.join(current_dir, 'simdock'))
 
-# Add the project root to the Python path
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
+try:
+    from simdock.gui.main_window import MainWindow
+except ImportError:
+    # Fallback: try direct import
+    from gui.main_window import MainWindow
+
+from PyQt5.QtWidgets import QApplication
 
 def main():
-    """Main entry point for SimDock 3.1"""
-    try:
-        print("Starting SimDock 3.1...")
-        print("Available docking engines will be detected automatically.")
-        
-        # Import and create the application
-        from gui.main_window import MainWindow
-        app = MainWindow()
-        app.run()
-        
-    except Exception as e:
-        print(f"Failed to start SimDock: {e}")
-        import traceback
-        traceback.print_exc()
-        input("Press Enter to close...")
+    app = QApplication(sys.argv)
+    app.setApplicationName("SimDock")
+    app.setApplicationVersion("3.1")
+    
+    window = MainWindow()
+    window.show()
+    
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()
