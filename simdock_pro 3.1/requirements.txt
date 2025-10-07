@@ -1,0 +1,13 @@
+# SimDock 3.1 Dependencies
+# Python 3.6+ with tkinter (usually included in standard Python distributions)
+
+# GUI Framework
+customtkinter>=5.2.0
+
+# Core dependencies
+requests>=2.25.1
+
+# External dependencies (must be installed separately):
+# - Open Babel ('obabel')
+# - AutoDock Vina ('vina')
+# - VMD ('vmd') and/or UCSF ChimeraX ('chimerax')
