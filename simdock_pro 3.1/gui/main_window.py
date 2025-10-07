@@ -12,7 +12,9 @@ from core.file_processor import FileProcessor
 from core.session_manager import SessionManager
 from core.project_manager import ProjectManager
 from gui.dialogs import AdvancedSettingsDialog, ResultsDialog, BatchResultsDialog
-from gui.components import DockingSetupTab, ResultsTab, VisualizationTab
+from gui.docking_panel import DockingPanel
+from gui.visualization_panel import VisualizationPanel
+from gui.results_panel import ResultsPanel
 from utils.config import get_config_manager
 
 
@@ -179,9 +181,9 @@ class MainWindow:
         self.visualization_tab = self.tabview.add("Visualization")
         
         # Initialize tab components - FIXED: Remove extra parameters
-        self.docking_setup_tab = DockingSetupTab(self.docking_tab, self)
-        self.results_tab_component = ResultsTab(self.results_tab, self)
-        self.visualization_tab_component = VisualizationTab(self.visualization_tab, self)
+        self.docking_panel = DockingPanel(self.docking_tab, self)
+        self.results_panel = ResultsPanel(self.results_tab, self)
+        self.visualization_panel = VisualizationPanel(self.visualization_tab, self)
     
     def _create_status_bar(self):
         """Create status bar at bottom of window."""
@@ -267,7 +269,7 @@ class MainWindow:
         
         if project_data.get('files', {}).get('ligands'):
             self.ligand_library = [ligand['path'] for ligand in project_data['files']['ligands']]
-            self.docking_setup_tab.refresh_ligand_list()
+            self.docking_panel.refresh_ligand_list()
         
         # Load docking parameters if available
         if 'settings' in project_data:
@@ -329,7 +331,7 @@ class MainWindow:
         
         if file_path:
             self.ligand_library = [file_path]
-            self.docking_setup_tab.refresh_ligand_list()
+            self.docking_panel.refresh_ligand_list()
             self.update_status(f"Selected ligand: {os.path.basename(file_path)}")
             self._start_coordinate_calculation()
     
@@ -347,7 +349,7 @@ class MainWindow:
                         file_path = os.path.join(folder_path, filename)
                         self.ligand_library.append(file_path)
                 
-                self.docking_setup_tab.refresh_ligand_list()
+               self.docking_panel.refresh_ligand_list()
                 self.update_status(f"Imported {len(self.ligand_library)} ligands")
                 
             except Exception as e:
@@ -398,7 +400,7 @@ class MainWindow:
     def _on_pubchem_fetched(self, file_path: str, identifier: str):
         """Handle successful PubChem fetch."""
         self.ligand_library = [file_path]
-        self.docking_setup_tab.refresh_ligand_list()
+        self.docking_panel.refresh_ligand_list()
         self.update_status(f"Downloaded ligand: {identifier}")
         self._start_coordinate_calculation()
     
@@ -679,7 +681,7 @@ class MainWindow:
         
         # Switch to results tab
         self.tabview.set("Results")
-        self.results_tab_component.show_single_results(self.last_results)
+        self.results_panel.show_single_results(self.last_results)
         
         # Auto-visualize if in single mode
         if len(self.ligand_library) == 1:
@@ -693,7 +695,8 @@ class MainWindow:
         
         # Switch to results tab
         self.tabview.set("Results")
-        self.results_tab_component.show_batch_results(self.batch_results_summary, self.full_batch_results)
+        self.results_panel.show_batch_results(self.batch_results_summary, self.full_batch_results)
+
     
     def _on_docking_error(self, error: str):
         """Handle docking errors."""
@@ -712,7 +715,7 @@ class MainWindow:
         if self.last_run_type == 'single' and self.single_docking_output_path:
             # Switch to visualization tab first
             self.tabview.set("Visualization")
-            self.visualization_tab_component.visualize_single_results(
+            self.visualization_panel.visualize_single_results(
                 self.receptor_pdbqt_path, 
                 self.single_docking_output_path,
                 self.viewer_choice.get()
@@ -720,7 +723,7 @@ class MainWindow:
         elif self.last_run_type == 'batch':
             # Switch to visualization tab and show batch options
             self.tabview.set("Visualization")
-            self.visualization_tab_component.show_batch_visualization(self.batch_results_summary)
+            self.visualization_panel.show_batch_visualization(self.batch_results_summary)
     
     def update_status(self, message: str, progress: Optional[float] = None):
         """Update status bar and progress."""
