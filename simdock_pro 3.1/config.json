@@ -7,10 +7,10 @@
     },
     "platform_settings": {
         "windows": {
-            "obabel": "C:\\Program Files (x86)\\OpenBabel-3.1.1\\obabel.exe",
-            "vina": "C:\\Program Files (x86)\\PyRx\\vina.exe",
-            "chimerax": "C:\\Program Files\\Chimerax 1.10.1\\bin\\Chimerax.exe",
-            "vmd": "C:\\Program Files\\University of Illinois\\UMD2\\vmd.exe",
+            "obabel": "obabel",
+            "vina": "vina",
+            "chimerax": "chimerax",
+            "vmd": "vmd",
             "create_no_window": true
         },
         "linux": {
